@@ -45,31 +45,41 @@ interface RunConfig {
   outputPath: string
 }
 
-const CONFIGS: RunConfig[] = [
+// Parse --concurrency flag (default: 2 — conservative for exhaustive depth)
+const concurrencyArg = process.argv.indexOf('--concurrency')
+const CONCURRENCY =
+  concurrencyArg >= 0 ? Number(process.argv[concurrencyArg + 1] ?? 2) : 2
+
+// --ablation flag: writes to config-{X}-ablation.jsonl and skips Gemini
+const ABLATION = process.argv.includes('--ablation')
+
+const suffix = ABLATION ? '-ablation' : ''
+
+const ALL_CONFIGS: RunConfig[] = [
   {
     label: 'A',
     model: 'gpt-5.4',
     depth: 'exhaustive',
-    outputPath: resolve(RESULTS_DIR, 'config-A.jsonl'),
+    outputPath: resolve(RESULTS_DIR, `config-A${suffix}.jsonl`),
   },
   {
     label: 'B',
     model: 'claude-opus-4-6',
     depth: 'exhaustive',
-    outputPath: resolve(RESULTS_DIR, 'config-B.jsonl'),
+    outputPath: resolve(RESULTS_DIR, `config-B${suffix}.jsonl`),
   },
   {
     label: 'C',
     model: 'gemini-2.5-pro',
     depth: 'exhaustive',
-    outputPath: resolve(RESULTS_DIR, 'config-C.jsonl'),
+    outputPath: resolve(RESULTS_DIR, `config-C${suffix}.jsonl`),
   },
 ]
 
-// Parse --concurrency flag (default: 2 — conservative for exhaustive depth)
-const concurrencyArg = process.argv.indexOf('--concurrency')
-const CONCURRENCY =
-  concurrencyArg >= 0 ? Number(process.argv[concurrencyArg + 1] ?? 2) : 2
+// Ablation runs only A and B (GPT-5.4 and Opus) — Gemini quota is limited
+const CONFIGS = ABLATION
+  ? ALL_CONFIGS.filter((c) => c.label !== 'C')
+  : ALL_CONFIGS
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
