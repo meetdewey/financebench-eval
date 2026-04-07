@@ -50,12 +50,14 @@ const concurrencyArg = process.argv.indexOf('--concurrency')
 const CONCURRENCY =
   concurrencyArg >= 0 ? Number(process.argv[concurrencyArg + 1] ?? 2) : 2
 
-// --ablation flag: writes to config-{X}-ablation.jsonl and skips Gemini
+// --ablation flag: writes to config-{X}-ablation.jsonl
+// --enhanced flag: writes to config-{X}-enhanced.jsonl (gpt-5.4 summaries/captions)
 const ABLATION = process.argv.includes('--ablation')
+const ENHANCED = process.argv.includes('--enhanced')
 
-const suffix = ABLATION ? '-ablation' : ''
+const suffix = ABLATION ? '-ablation' : ENHANCED ? '-enhanced' : ''
 
-const ALL_CONFIGS: RunConfig[] = [
+const CONFIGS: RunConfig[] = [
   {
     label: 'A',
     model: 'gpt-5.4',
@@ -68,18 +70,7 @@ const ALL_CONFIGS: RunConfig[] = [
     depth: 'exhaustive',
     outputPath: resolve(RESULTS_DIR, `config-B${suffix}.jsonl`),
   },
-  {
-    label: 'C',
-    model: 'gemini-2.5-pro',
-    depth: 'exhaustive',
-    outputPath: resolve(RESULTS_DIR, `config-C${suffix}.jsonl`),
-  },
 ]
-
-// Ablation runs only A and B (GPT-5.4 and Opus) — Gemini quota is limited
-const CONFIGS = ABLATION
-  ? ALL_CONFIGS.filter((c) => c.label !== 'C')
-  : ALL_CONFIGS
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 

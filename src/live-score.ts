@@ -13,9 +13,13 @@ import type { RunResult } from './types.js'
 const ROOT = resolve(fileURLToPath(import.meta.url), '../..')
 const RESULTS_DIR = resolve(ROOT, 'results')
 
+const ABLATION = process.argv.includes('--ablation')
+const ENHANCED = process.argv.includes('--enhanced')
+const suffix = ABLATION ? '-ablation' : ENHANCED ? '-enhanced' : ''
+
 const CONFIGS = [
-  { label: 'A', model: 'gpt-5.4', file: 'config-A.jsonl' },
-  { label: 'B', model: 'claude-opus-4-6', file: 'config-B.jsonl' },
+  { label: 'A', model: 'gpt-5.4', file: `config-A${suffix}.jsonl` },
+  { label: 'B', model: 'claude-opus-4-6', file: `config-B${suffix}.jsonl` },
 ]
 
 // Per-config state
@@ -50,7 +54,7 @@ async function scoreResult(result: RunResult): Promise<boolean> {
 
 function render() {
   const lines: string[] = [
-    '\x1b[2J\x1b[H\x1b[1mDewey FinanceBench — Live Scores\x1b[0m\n',
+    `\x1b[2J\x1b[H\x1b[1mDewey FinanceBench — Live Scores${ABLATION ? ' (ablation)' : ENHANCED ? ' (enhanced)' : ''}\x1b[0m\n`,
   ]
   for (const c of CONFIGS) {
     const s = state.get(c.label)
@@ -86,7 +90,7 @@ async function poll() {
           if (correct) s.correct++
           render()
         })
-        .catch(() => {})
+        .catch((err) => { process.stderr.write(`  judge error: ${err}\n`) })
     }
   }
 }

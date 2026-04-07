@@ -1,0 +1,36 @@
+{
+  "name": "dewey-financebench-eval",
+  "version": "1.0.0",
+  "description": "FinanceBench evaluation of Dewey's /research endpoint — comparing GPT-5.4 and Claude Opus 4.6",
+  "type": "module",
+  "scripts": {
+    "ingest": "tsx src/01-ingest.ts",
+    "live": "tsx src/live-score.ts",
+    "live:ablation": "tsx src/live-score.ts --ablation",
+    "live:enhanced": "tsx src/live-score.ts --enhanced",
+    "run": "tsx src/02-run.ts",
+    "score": "tsx src/03-score.ts",
+    "report": "tsx src/04-report.ts",
+    "all": "npm run ingest && npm run run && npm run score && npm run report",
+    "run:ablation": "tsx src/02-run.ts --ablation",
+    "score:ablation": "tsx src/03-score.ts --ablation",
+    "report:ablation": "tsx src/04-report.ts --ablation",
+    "all:ablation": "npm run run:ablation && npm run score:ablation && npm run report:ablation",
+    "run:enhanced": "tsx src/02-run.ts --enhanced",
+    "score:enhanced": "tsx src/03-score.ts --enhanced",
+    "report:enhanced": "tsx src/04-report.ts --enhanced",
+    "all:enhanced": "npm run run:enhanced && npm run score:enhanced && npm run report:enhanced",
+    "ci": "tsx src/05-ci.ts"
+  },
+  "dependencies": {
+    "openai": "^4.80.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.9.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

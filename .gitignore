@@ -1,0 +1,15 @@
+node_modules/
+dist/
+.env
+
+# Runtime state — contains your specific collection/document UUIDs, not portable
+.state.json
+
+# Intermediate run output — committed only after scoring is complete
+results/config-A.jsonl
+results/config-B.jsonl
+results/config-C.jsonl
+results/config-A-ablation.jsonl
+results/config-B-ablation.jsonl
+results/config-A-enhanced.jsonl
+results/config-B-enhanced.jsonl

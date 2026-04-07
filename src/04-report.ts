@@ -96,13 +96,11 @@ function mdTable(headers: string[], rows: string[][]): string {
 function buildReport(
   a: ScoredResult[] | null,
   b: ScoredResult[] | null,
-  c: ScoredResult[] | null,
 ): string {
   const configs: { label: string; model: string; results: ScoredResult[] }[] =
     []
   if (a) configs.push({ label: 'A', model: 'gpt-5.4', results: a })
   if (b) configs.push({ label: 'B', model: 'claude-opus-4-6', results: b })
-  if (c) configs.push({ label: 'C', model: 'gemini-2.5-pro', results: c })
 
   if (configs.length === 0) return '# No results found\n'
 
@@ -256,13 +254,13 @@ function main() {
   console.log('\nDewey FinanceBench — Step 4: Report\n')
 
   const ablation = process.argv.includes('--ablation')
-  const sfx = ablation ? '-ablation' : ''
+  const enhanced = process.argv.includes('--enhanced')
+  const sfx = ablation ? '-ablation' : enhanced ? '-enhanced' : ''
 
   const a = readScored(`A${sfx}`)
   const b = readScored(`B${sfx}`)
-  const c = ablation ? null : readScored('C')
 
-  if (!a && !b && !c) {
+  if (!a && !b) {
     console.error('No scored results found. Run "npm run score" first.')
     process.exit(1)
   }
@@ -271,7 +269,6 @@ function main() {
   for (const [label, results] of [
     [`A${sfx} (gpt-5.4)`, a],
     [`B${sfx} (claude-opus-4-6)`, b],
-    ...(c ? [['C (gemini-2.5-pro)', c] as const] : []),
   ] as const) {
     if (!results) continue
     const acc = accuracy(results)
@@ -279,7 +276,7 @@ function main() {
     console.log(`Config ${label}: ${pct(acc)} (${correct}/${results.length})`)
   }
 
-  const report = buildReport(a, b, c)
+  const report = buildReport(a, b)
   const reportPath = resolve(RESULTS_DIR, 'report.md')
   writeFileSync(reportPath, report)
   console.log('\nReport written to results/report.md\n')
