@@ -1,26 +1,32 @@
 # Dewey FinanceBench Evaluation
 
+[Evaluating agentic RAG for financial analysis: a FinanceBench study](https://meetdewey.com/blog/financebench-eval)
+
 This repository evaluates [Dewey](https://meetdewey.com)'s `/research` endpoint on the [FinanceBench](https://github.com/patronus-ai/financebench) benchmark — a 150-question test of financial document QA over SEC filings (10-K, 10-Q, 8-K, and earnings press releases).
 
-We compare two models running through the same agentic pipeline:
+We test three configurations:
 
 | Config | Model | Depth |
 |---|---|---|
-| A | GPT-5.4 | exhaustive |
-| B | Claude Opus 4.6 | exhaustive |
+| A | GPT-5.4 | exhaustive (agentic RAG) |
+| B | Claude Opus 4.6 | exhaustive (agentic RAG) |
+| D | Claude Opus 4.6 | full-context (no retrieval) |
 
 ## Results
 
-Accuracy figures are means across 10 independent LLM-judge scoring runs to account for judge non-determinism (see [Step 5](#step-5--confidence-intervals-optional)).
+Accuracy figures for configs A and B are means across 10 independent LLM-judge scoring runs to account for judge non-determinism (see [Step 5](#step-5--confidence-intervals-optional)).
 
 | System | Accuracy | Notes |
 |---|---|---|
-| **Dewey + GPT-5.4** (exhaustive) | **62.9%** | This repo |
-| **Dewey + Claude Opus 4.6** (exhaustive) | **84.0%** | This repo |
 | GPT-4-Turbo, vector RAG | 19% | FinanceBench paper, 2023 |
-| GPT-4-Turbo, long-context | 78% | FinanceBench paper, 2023 |
+| **Dewey + GPT-5.4** (exhaustive) | **62.9%** | This repo |
 | FinSage (agentic RAG) | ~70% | arXiv 2504.14493, 2025 |
+| Claude Opus 4.6, full context | 76.0%* | This repo |
+| GPT-4-Turbo, long-context | 78% | FinanceBench paper, 2023 |
+| **Dewey + Claude Opus 4.6** (exhaustive) | **83.7%** | This repo |
 | LinqAlpha (specialized) | 97.2% | LinqAlpha blog, 2024 |
+
+\*Six PepsiCo 10-K filings exceed Claude's 1M-token context limit and are scored as incorrect. Accuracy on the 144 answerable documents is 79.2%.
 
 Full breakdown by question type and document type: [results/report.md](results/report.md)
 
@@ -178,6 +184,7 @@ financebench-eval/
 ├── src/
 │   ├── 01-ingest.ts        # Download dataset + upload PDFs to Dewey
 │   ├── 02-run.ts           # Run /research for all questions × all configs
+│   ├── 02-run-fullcontext.ts # Config D: Claude Opus 4.6 full-context (no retrieval)
 │   ├── 03-score.ts         # Score predicted vs gold answers
 │   ├── 04-report.ts        # Generate report.md
 │   ├── 05-ci.ts            # Confidence intervals + Welch t-test across configs
@@ -197,6 +204,7 @@ financebench-eval/
 │   ├── config-B-ablation-scored.jsonl        # Opus 4.6 ablation results
 │   ├── config-A-enhanced-scored.jsonl        # GPT-5.4 enhanced results
 │   ├── config-B-enhanced-scored.jsonl        # Opus 4.6 enhanced results
+│   ├── config-D-scored.jsonl                 # Opus 4.6 full-context results
 │   ├── ci.json                               # Per-run accuracy data from 05-ci.ts
 │   └── report.md                             # Final report
 ├── .env.example
