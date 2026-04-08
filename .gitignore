@@ -5,6 +5,9 @@ dist/
 # Runtime state — contains your specific collection/document UUIDs, not portable
 .state.json
 
+# PDF cache — downloaded at runtime, not committed (158 MB)
+data/pdfs/
+
 # Intermediate run output — committed only after scoring is complete
 results/config-A.jsonl
 results/config-B.jsonl
@@ -13,3 +16,4 @@ results/config-A-ablation.jsonl
 results/config-B-ablation.jsonl
 results/config-A-enhanced.jsonl
 results/config-B-enhanced.jsonl
+results/config-D.jsonl

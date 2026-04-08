@@ -96,11 +96,18 @@ function mdTable(headers: string[], rows: string[][]): string {
 function buildReport(
   a: ScoredResult[] | null,
   b: ScoredResult[] | null,
+  d: ScoredResult[] | null = null,
 ): string {
   const configs: { label: string; model: string; results: ScoredResult[] }[] =
     []
   if (a) configs.push({ label: 'A', model: 'gpt-5.4', results: a })
   if (b) configs.push({ label: 'B', model: 'claude-opus-4-6', results: b })
+  if (d)
+    configs.push({
+      label: 'D',
+      model: 'claude-opus-4-6 (full-context)',
+      results: d,
+    })
 
   if (configs.length === 0) return '# No results found\n'
 
@@ -259,8 +266,10 @@ function main() {
 
   const a = readScored(`A${sfx}`)
   const b = readScored(`B${sfx}`)
+  // Full-context baseline is always included when present, regardless of flags
+  const d = sfx === '' ? readScored('D') : null
 
-  if (!a && !b) {
+  if (!a && !b && !d) {
     console.error('No scored results found. Run "npm run score" first.')
     process.exit(1)
   }
@@ -269,6 +278,7 @@ function main() {
   for (const [label, results] of [
     [`A${sfx} (gpt-5.4)`, a],
     [`B${sfx} (claude-opus-4-6)`, b],
+    ['D (claude-opus-4-6, full-context)', d],
   ] as const) {
     if (!results) continue
     const acc = accuracy(results)
@@ -276,7 +286,7 @@ function main() {
     console.log(`Config ${label}: ${pct(acc)} (${correct}/${results.length})`)
   }
 
-  const report = buildReport(a, b)
+  const report = buildReport(a, b, d)
   const reportPath = resolve(RESULTS_DIR, 'report.md')
   writeFileSync(reportPath, report)
   console.log('\nReport written to results/report.md\n')

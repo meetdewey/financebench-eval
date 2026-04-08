@@ -115,6 +115,7 @@ export async function* streamResearch(
   }
 
   const reader = res.body?.getReader()
+  if (!reader) throw new Error('Response body is not readable')
   const decoder = new TextDecoder()
   let buffer = ''
 

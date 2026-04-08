@@ -15,12 +15,15 @@ const RESULTS_DIR = resolve(ROOT, 'results')
 
 const ABLATION = process.argv.includes('--ablation')
 const ENHANCED = process.argv.includes('--enhanced')
+const FULLCONTEXT = process.argv.includes('--fullcontext')
 const suffix = ABLATION ? '-ablation' : ENHANCED ? '-enhanced' : ''
 
-const CONFIGS = [
-  { label: 'A', model: 'gpt-5.4', file: `config-A${suffix}.jsonl` },
-  { label: 'B', model: 'claude-opus-4-6', file: `config-B${suffix}.jsonl` },
-]
+const CONFIGS = FULLCONTEXT
+  ? [{ label: 'D', model: 'claude-opus-4-6 (full-context)', file: 'config-D.jsonl' }]
+  : [
+      { label: 'A', model: 'gpt-5.4', file: `config-A${suffix}.jsonl` },
+      { label: 'B', model: 'claude-opus-4-6', file: `config-B${suffix}.jsonl` },
+    ]
 
 // Per-config state
 const state = new Map<

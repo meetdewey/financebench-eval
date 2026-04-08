@@ -175,6 +175,7 @@ const CONFIGS = [
   { label: 'B', desc: 'claude-opus-4-6 (gpt-4o-mini features)' },
   { label: 'B-ablation', desc: 'claude-opus-4-6 (no features)' },
   { label: 'B-enhanced', desc: 'claude-opus-4-6 (gpt-5.4 features)' },
+  { label: 'D', desc: 'claude-opus-4-6 (full-context, no retrieval)' },
 ]
 
 async function main() {

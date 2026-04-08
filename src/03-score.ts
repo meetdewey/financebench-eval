@@ -126,10 +126,15 @@ async function main() {
 
   const ablation = process.argv.includes('--ablation')
   const enhanced = process.argv.includes('--enhanced')
-  const suffix = ablation ? '-ablation' : enhanced ? '-enhanced' : ''
-  const labels = ablation || enhanced ? ['A', 'B'] : ['A', 'B', 'C']
-  for (const label of labels.map((l) => `${l}${suffix}`)) {
-    await scoreConfig(label)
+  const fullcontext = process.argv.includes('--fullcontext')
+  if (fullcontext) {
+    await scoreConfig('D')
+  } else {
+    const suffix = ablation ? '-ablation' : enhanced ? '-enhanced' : ''
+    const labels = ablation || enhanced ? ['A', 'B'] : ['A', 'B', 'C']
+    for (const label of labels.map((l) => `${l}${suffix}`)) {
+      await scoreConfig(label)
+    }
   }
 
   console.log('\nScoring complete. Run "npm run report" next.\n')

@@ -8,6 +8,7 @@
     "live": "tsx src/live-score.ts",
     "live:ablation": "tsx src/live-score.ts --ablation",
     "live:enhanced": "tsx src/live-score.ts --enhanced",
+    "live:fullcontext": "tsx src/live-score.ts --fullcontext",
     "run": "tsx src/02-run.ts",
     "score": "tsx src/03-score.ts",
     "report": "tsx src/04-report.ts",
@@ -20,9 +21,13 @@
     "score:enhanced": "tsx src/03-score.ts --enhanced",
     "report:enhanced": "tsx src/04-report.ts --enhanced",
     "all:enhanced": "npm run run:enhanced && npm run score:enhanced && npm run report:enhanced",
+    "run:fullcontext": "tsx src/02-run-fullcontext.ts",
+    "score:fullcontext": "tsx src/03-score.ts --fullcontext",
+    "all:fullcontext": "npm run run:fullcontext && npm run score:fullcontext",
     "ci": "tsx src/05-ci.ts"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.85.0",
     "openai": "^4.80.0"
   },
   "devDependencies": {
