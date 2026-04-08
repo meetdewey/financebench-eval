@@ -70,7 +70,7 @@ def chart_accuracy():
         ('GPT-4-Turbo, vector RAG\n(FinanceBench paper)', 0.190, BASELINE_GRAY, False),
         ('FinSage, agentic RAG\n(arXiv 2504.14493)', 0.700, BASELINE_GRAY, False),
         ('GPT-4-Turbo, full context\n(FinanceBench paper)', 0.780, BASELINE_GRAY, False),
-        ('Dewey + GPT-5.4\n(this work)', mean(ci['A']), DEWEY_BLUE, True),
+        ('Dewey + GPT-5.4\n(this work)', mean(ci['A']), DEWEY_GREEN, True),
         ('Dewey + Claude Opus 4.6\n(this work)', mean(ci['B']), DEWEY_GREEN, True),
     ]
 
